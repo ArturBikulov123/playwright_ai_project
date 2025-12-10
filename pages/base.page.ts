@@ -21,7 +21,6 @@ export class BasePage {
    */
   async waitForTitleContains(text: string): Promise<void> {
     await this.page.waitForFunction(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
       (expectedText: string) => document.title.includes(expectedText),
       text
     );

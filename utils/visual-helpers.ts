@@ -65,8 +65,10 @@ export class VisualHelpers {
     logger.debug('Hiding elements for screenshot');
     for (const selector of selectors) {
       await page.locator(selector).evaluate((el: Element) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (el as HTMLElement).style.visibility = 'hidden';
+        const htmlElement = el as HTMLElement;
+        if (htmlElement?.style) {
+          htmlElement.style.visibility = 'hidden';
+        }
       });
     }
   }
@@ -80,8 +82,10 @@ export class VisualHelpers {
     logger.debug('Showing elements after screenshot');
     for (const selector of selectors) {
       await page.locator(selector).evaluate((el: Element) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (el as HTMLElement).style.visibility = 'visible';
+        const htmlElement = el as HTMLElement;
+        if (htmlElement?.style) {
+          htmlElement.style.visibility = 'visible';
+        }
       });
     }
   }

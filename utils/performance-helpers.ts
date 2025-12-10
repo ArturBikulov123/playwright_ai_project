@@ -25,31 +25,24 @@ export class PerformanceHelpers {
   static async measurePagePerformance(page: Page): Promise<PerformanceMetrics> {
     logger.debug('Measuring page performance');
 
-    const metrics = await page.evaluate(() => {
-       
-      const navigationEntries = performance.getEntriesByType('navigation');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const navigation = navigationEntries[0] as PerformanceNavigationTiming;
+    const metrics = await page.evaluate((): PerformanceMetrics => {
+      const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+      const navigation: PerformanceNavigationTiming | undefined = navigationEntries[0];
       if (!navigation) {
         throw new Error('Navigation timing not available');
       }
        
       const paint = performance.getEntriesByType('paint') as PerformancePaintTiming[];
+      const firstPaintEntry: PerformancePaintTiming | undefined = paint.find((entry) => entry.name === 'first-paint');
+      const firstContentfulPaintEntry: PerformancePaintTiming | undefined = paint.find((entry) => entry.name === 'first-contentful-paint');
       
       return {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        loadTime: navigation.loadEventEnd - navigation.fetchStart,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.fetchStart,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        firstPaint: paint.find((entry) => entry.name === 'first-paint')?.startTime ?? 0,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        firstContentfulPaint: paint.find((entry) => entry.name === 'first-contentful-paint')?.startTime ?? 0,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        timeToInteractive: navigation.domInteractive - navigation.fetchStart,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        totalSize: navigation.transferSize,
-         
+        loadTime: Number(navigation.loadEventEnd) - Number(navigation.fetchStart),
+        domContentLoaded: Number(navigation.domContentLoadedEventEnd) - Number(navigation.fetchStart),
+        firstPaint: Number(firstPaintEntry?.startTime ?? 0),
+        firstContentfulPaint: Number(firstContentfulPaintEntry?.startTime ?? 0),
+        timeToInteractive: Number(navigation.domInteractive) - Number(navigation.fetchStart),
+        totalSize: Number(navigation.transferSize),
         requestCount: performance.getEntriesByType('resource').length,
       };
     });
@@ -83,16 +76,18 @@ export class PerformanceHelpers {
     
     page.on('response', (response) => {
       const request = response.request();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      const timing = response.timing();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const responseEnd = timing.responseEnd as number;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const requestStart = timing.requestStart as number;
-      const duration = responseEnd - requestStart;
-      
-      if (duration > slowThreshold) {
-        logger.warn(`Slow request detected: ${request.url()} took ${duration}ms`);
+      try {
+        const responseWithTiming = response as { timing: () => { responseEnd?: number; requestStart?: number } };
+        const timing = responseWithTiming.timing();
+        const responseEnd: number = Number(timing.responseEnd ?? 0);
+        const requestStart: number = Number(timing.requestStart ?? 0);
+        const duration = responseEnd - requestStart;
+        
+        if (duration > slowThreshold) {
+          logger.warn(`Slow request detected: ${request.url()} took ${duration}ms`);
+        }
+      } catch {
+        logger.debug('Timing information not available for request');
       }
     });
   }
@@ -105,16 +100,12 @@ export class PerformanceHelpers {
   static async getResourceSizes(page: Page): Promise<Array<{ url: string; size: number; type: string }>> {
     logger.debug('Collecting resource sizes');
     
-    const resources = await page.evaluate(() => {
-       
+    const resources = await page.evaluate((): Array<{ url: string; size: number; type: string }> => {
       const entries = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
       return entries.map((entry: PerformanceResourceTiming) => ({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        url: entry.name,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        size: entry.transferSize,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        type: entry.initiatorType,
+        url: String(entry.name),
+        size: Number(entry.transferSize),
+        type: String(entry.initiatorType),
       }));
     });
 
