@@ -53,7 +53,7 @@ function validateHttpsUrl(url: string, key: string): string {
 function getEnv(key: string, defaultValue: string): string {
   const value = process.env[key] ?? defaultValue;
   // Validate HTTPS for URL environment variables
-  if (key.includes('URL') || key.includes('URL')) {
+  if (key.includes('URL')) {
     return validateHttpsUrl(value, key);
   }
   return value;
