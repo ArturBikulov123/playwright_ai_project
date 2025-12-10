@@ -26,30 +26,30 @@ export class PerformanceHelpers {
     logger.debug('Measuring page performance');
 
     const metrics = await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+       
       const navigationEntries = performance.getEntriesByType('navigation');
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const navigation = navigationEntries[0] as unknown as PerformanceNavigationTiming;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const navigation = navigationEntries[0] as PerformanceNavigationTiming;
       if (!navigation) {
         throw new Error('Navigation timing not available');
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+       
       const paint = performance.getEntriesByType('paint') as PerformancePaintTiming[];
       
       return {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         loadTime: navigation.loadEventEnd - navigation.fetchStart,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         domContentLoaded: navigation.domContentLoadedEventEnd - navigation.fetchStart,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         firstPaint: paint.find((entry) => entry.name === 'first-paint')?.startTime ?? 0,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         firstContentfulPaint: paint.find((entry) => entry.name === 'first-contentful-paint')?.startTime ?? 0,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         timeToInteractive: navigation.domInteractive - navigation.fetchStart,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         totalSize: navigation.transferSize,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+         
         requestCount: performance.getEntriesByType('resource').length,
       };
     });
@@ -85,9 +85,9 @@ export class PerformanceHelpers {
       const request = response.request();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const timing = response.timing();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const responseEnd = timing.responseEnd as number;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const requestStart = timing.requestStart as number;
       const duration = responseEnd - requestStart;
       
@@ -106,14 +106,14 @@ export class PerformanceHelpers {
     logger.debug('Collecting resource sizes');
     
     const resources = await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+       
       const entries = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
       return entries.map((entry: PerformanceResourceTiming) => ({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         url: entry.name,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         size: entry.transferSize,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
         type: entry.initiatorType,
       }));
     });

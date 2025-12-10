@@ -24,9 +24,16 @@ async function globalSetup(config: FullConfig): Promise<void> {
   // Example: Health check - verify the application is accessible
   // Non-blocking: if health check fails, log warning but don't fail the setup
   try {
+    // Use environment variable to disable headless shell if set
+    const useHeadlessNew = process.env.PW_USE_HEADLESS_NEW !== '0';
     const browser = await chromium.launch({
       headless: true,
-      args: ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage'],
+      args: [
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        ...(useHeadlessNew ? [] : ['--disable-headless-shell']),
+      ],
     });
     
     const page = await browser.newPage();
