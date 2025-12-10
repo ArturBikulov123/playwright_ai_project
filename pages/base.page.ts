@@ -20,7 +20,6 @@ export class BasePage {
    * @param text - Text that should be in the page title
    */
   async waitForTitleContains(text: string): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, arrow-body-style
     await this.page.waitForFunction(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
       (expectedText: string) => document.title.includes(expectedText),

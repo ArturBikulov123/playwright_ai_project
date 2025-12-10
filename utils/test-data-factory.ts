@@ -30,16 +30,11 @@ export class TestDataFactory {
    * @returns UserData object with random values
    */
   static generateUser(): UserData {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const username = faker.internet.userName() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const password = faker.internet.password({ length: 12, memorable: false }) as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const firstName = faker.person.firstName() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const lastName = faker.person.lastName() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const email = faker.internet.email() as string;
+    const username = faker.internet.userName();
+    const password = faker.internet.password({ length: 12, memorable: false });
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const email = faker.internet.email();
     const user = {
       username,
       password,
@@ -56,20 +51,13 @@ export class TestDataFactory {
    * @returns OrderData object with random values
    */
   static generateOrder(): OrderData {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const firstName = faker.person.firstName() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const lastName = faker.person.lastName() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const zipCode = faker.location.zipCode() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const address = faker.location.streetAddress() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const city = faker.location.city() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const state = faker.location.state() as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const country = faker.location.country() as string;
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const zipCode = faker.location.zipCode();
+    const address = faker.location.streetAddress();
+    const city = faker.location.city();
+    const state = faker.location.state();
+    const country = faker.location.country();
     const order = {
       firstName,
       lastName,
@@ -89,8 +77,7 @@ export class TestDataFactory {
    * @returns Random string
    */
   static generateString(length: number = 10): string {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return faker.string.alphanumeric(length) as string;
+    return faker.string.alphanumeric(length);
   }
 
   /**
@@ -100,8 +87,7 @@ export class TestDataFactory {
    * @returns Random number
    */
   static generateNumber(min: number = 0, max: number = 100): number {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return faker.number.int({ min, max }) as number;
+    return faker.number.int({ min, max });
   }
 
   /**
@@ -109,8 +95,7 @@ export class TestDataFactory {
    * @returns Random email address
    */
   static generateEmail(): string {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return faker.internet.email() as string;
+    return faker.internet.email();
   }
 
   /**
@@ -118,8 +103,7 @@ export class TestDataFactory {
    * @returns Random phone number
    */
   static generatePhoneNumber(): string {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return faker.phone.number() as string;
+    return faker.phone.number();
   }
 
   /**
@@ -128,8 +112,7 @@ export class TestDataFactory {
    * @returns Random date
    */
   static generateDate(past: boolean = false): Date {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return (past ? faker.date.past() : faker.date.future()) as Date;
+    return past ? faker.date.past() : faker.date.future();
   }
 
   /**
@@ -137,8 +120,7 @@ export class TestDataFactory {
    * @returns Random UUID string
    */
   static generateUUID(): string {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return faker.string.uuid() as string;
+    return faker.string.uuid();
   }
 }
 

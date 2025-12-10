@@ -87,7 +87,7 @@ export class PerformanceHelpers {
       const timing = response.timing();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const responseEnd = timing.responseEnd as number;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const requestStart = timing.requestStart as number;
       const duration = responseEnd - requestStart;
       

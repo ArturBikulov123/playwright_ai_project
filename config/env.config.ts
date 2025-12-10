@@ -7,11 +7,9 @@ import { logger } from '../utils/logger';
  */
 
 // Load environment variables from .env file
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-const configResult = config();
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-if (configResult?.error) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const configResult = config({ errorOnMissingFile: false });
+if (configResult?.error && configResult.error.code !== 'ENOENT') {
+  // Only throw if it's not a "file not found" error
   throw configResult.error;
 }
 
