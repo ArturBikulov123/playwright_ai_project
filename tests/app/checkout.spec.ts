@@ -3,7 +3,7 @@ import { ORDER_DATA } from '../../data/orders';
 
 test.describe('Checkout Tests', () => {
   test('should complete full checkout flow from login to order completion', async ({
-    loggedInUser,
+    _loggedInUser,
     productsPage,
     cartPage,
     checkoutPage,
@@ -31,10 +31,11 @@ test.describe('Checkout Tests', () => {
 
     // Then - Order should be completed successfully
     await checkoutPage.assertOrderSuccess();
+    expect(checkoutPage.getCurrentUrl()).toContain('checkout-complete.html');
   });
 
   test('should show error when required checkout fields are empty', async ({
-    loggedInUser,
+    _loggedInUser,
     productsPage,
     cartPage,
     checkoutPage,
@@ -50,10 +51,11 @@ test.describe('Checkout Tests', () => {
 
     // Then - Error message should be displayed
     await checkoutPage.assertRequiredFieldError();
+    expect(checkoutPage.getCurrentUrl()).toContain('checkout-step-one');
   });
 
   test('should clear cart after successful order completion', async ({
-    loggedInUser,
+    _loggedInUser,
     productsPage,
     cartPage,
     checkoutPage,

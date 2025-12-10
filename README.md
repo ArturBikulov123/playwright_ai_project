@@ -17,6 +17,11 @@ This framework implements a comprehensive test suite for SauceDemo using TypeScr
 - **TypeScript** - Type-safe test code
 - **Playwright** - Modern, reliable end-to-end testing
 - **@playwright/test** - Playwright's test runner
+- **Faker.js** - Dynamic test data generation
+- **ESLint** - Code linting and quality
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for quality gates
+- **GitHub Actions** - CI/CD pipeline
 
 ## Folder Structure
 
@@ -25,6 +30,11 @@ playwright_ai_project/
 ├── playwright.config.ts      # Playwright configuration
 ├── tsconfig.json              # TypeScript configuration
 ├── package.json               # Project dependencies
+├── global-setup.ts            # Global test setup
+├── global-teardown.ts         # Global test teardown
+│
+├── config/                    # Configuration files
+│   └── env.config.ts         # Environment configuration
 │
 ├── pages/                     # Page Object Models
 │   ├── base.page.ts          # Base page with shared helpers
@@ -36,15 +46,31 @@ playwright_ai_project/
 ├── fixtures/                  # Test fixtures
 │   └── test-fixtures.ts      # Custom fixtures with page objects and auth
 │
+├── utils/                     # Utility functions
+│   ├── logger.ts             # Structured logging utility
+│   ├── wait-helpers.ts       # Advanced wait strategies
+│   ├── file-helpers.ts       # File operations
+│   ├── api-helpers.ts        # API testing utilities
+│   ├── test-data-factory.ts  # Dynamic test data generation
+│   ├── visual-helpers.ts     # Visual regression testing
+│   ├── performance-helpers.ts # Performance testing utilities
+│   └── index.ts              # Central utility exports
+│
 ├── data/                      # Test data
 │   ├── users.ts              # User credentials and helpers
 │   └── orders.ts             # Order information for checkout
 │
-└── tests/                     # Test suites
-    └── app/
-        ├── login.spec.ts     # Login functionality tests
-        ├── cart.spec.ts      # Shopping cart tests
-        └── checkout.spec.ts # Checkout flow tests
+├── tests/                     # Test suites
+│   ├── app/                   # Application tests
+│   │   ├── login.spec.ts     # Login functionality tests
+│   │   ├── cart.spec.ts      # Shopping cart tests
+│   │   └── checkout.spec.ts  # Checkout flow tests
+│   └── api/                   # API tests
+│       └── example-api.spec.ts # API testing examples
+│
+└── .github/                   # GitHub workflows
+    └── workflows/
+        └── ci.yml            # CI/CD pipeline
 ```
 
 ## Installation
@@ -62,7 +88,13 @@ playwright_ai_project/
 
 3. **Install Playwright browsers** (if not already installed)
    ```bash
-   npx playwright install chromium
+   npx playwright install --with-deps
+   ```
+
+4. **Set up environment variables** (optional)
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
 
 ## Running Tests
@@ -90,6 +122,31 @@ npm run test:debug
 ### Run specific test file
 ```bash
 npx playwright test tests/app/login.spec.ts
+```
+
+### Run tests for specific browser
+```bash
+npm run test:chromium    # Run on Chromium only
+npm run test:firefox     # Run on Firefox only
+npm run test:webkit      # Run on WebKit only
+npm run test:mobile      # Run on mobile browsers
+```
+
+### Run tests by tags
+```bash
+npm run test:smoke       # Run smoke tests (@smoke tag)
+npm run test:regression  # Run regression tests (@regression tag)
+npm run test:api         # Run API tests (@api tag)
+```
+
+### View test report
+```bash
+npm run test:report      # Open HTML test report
+```
+
+### Code generation
+```bash
+npm run test:codegen     # Generate test code interactively
 ```
 
 ## Example Scenarios Covered
@@ -140,13 +197,85 @@ This framework demonstrates several key competencies valued in enterprise test a
    - Helpful error messages
    - Easy to extend and maintain
 
+## Key Features
+
+### 🎯 Multi-Browser Support
+- **Desktop**: Chromium, Firefox, WebKit
+- **Mobile**: Chrome (Android), Safari (iOS)
+- **Tablet**: iPad Pro viewport
+
+### 🛠️ Utility Functions
+- **Logger**: Structured logging with different log levels
+- **Wait Helpers**: Advanced wait strategies beyond Playwright defaults
+- **API Helpers**: Comprehensive API testing utilities
+- **Test Data Factory**: Dynamic test data generation with Faker.js
+- **Visual Helpers**: Screenshot comparison and visual regression testing
+- **Performance Helpers**: Page load metrics and performance monitoring
+- **File Helpers**: JSON file operations and test data management
+
+### 🔧 Configuration
+- **Environment-based**: Configurable via `.env` file
+- **Multiple Reporters**: HTML, JSON, JUnit, List, GitHub Actions
+- **Global Setup/Teardown**: Pre-test setup and post-test cleanup
+- **CI/CD Ready**: GitHub Actions workflow included
+
+### 📊 Reporting
+- **HTML Report**: Interactive test report with screenshots and videos
+- **JSON Report**: Machine-readable test results
+- **JUnit Report**: CI/CD integration compatible
+- **GitHub Actions**: Native GitHub Actions reporter
+
+### 🎨 Code Quality
+- **ESLint**: Comprehensive linting rules
+- **Prettier**: Consistent code formatting
+- **Husky**: Pre-commit and pre-push hooks
+- **TypeScript**: Full type safety
+
 ## Configuration Highlights
 
-- **Base URL**: Configured to `https://www.saucedemo.com`
-- **Browser**: Chromium (single project for simplicity)
-- **Timeouts**: 30s per test, 10s for assertions
-- **Reporting**: HTML reporter with trace on failure
-- **Retries**: 2 retries in CI environments
+- **Base URL**: Configurable via environment variables (default: `https://www.saucedemo.com`)
+- **Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari, Tablet
+- **Timeouts**: 30s per test, 10s for assertions (configurable)
+- **Reporting**: HTML, JSON, JUnit, List, GitHub Actions reporters
+- **Retries**: 2 retries in CI environments, 0 in local
+- **Workers**: Auto-detected in local, 1 in CI
+- **Screenshots**: Only on failure
+- **Videos**: Retained on failure
+- **Traces**: On first retry
+
+## Environment Variables
+
+Create a `.env` file (use `.env.example` as a template) to configure:
+
+- `BASE_URL`: Application base URL
+- `HEADLESS`: Run tests in headless mode (true/false)
+- `BROWSER`: Default browser (chromium/firefox/webkit)
+- `TIMEOUT`: Test timeout in milliseconds
+- `LOG_LEVEL`: Logging level (DEBUG/INFO/WARN/ERROR)
+- And more... (see `.env.example`)
+
+## CI/CD
+
+The project includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that:
+- Runs tests on multiple browsers
+- Executes linter checks
+- Uploads test results and reports as artifacts
+- Publishes HTML reports to GitHub Pages
+
+## Best Practices Implemented
+
+1. **Page Object Model (POM)** - Clean separation of page interactions
+2. **Test Fixtures** - Reusable test setup and authentication
+3. **Utility Functions** - DRY principle with reusable helpers
+4. **Environment Configuration** - Flexible environment-based configuration
+5. **Type Safety** - Full TypeScript implementation
+6. **Code Quality** - ESLint, Prettier, and Husky hooks
+7. **CI/CD Integration** - Automated testing pipeline
+8. **Multi-Browser Testing** - Cross-browser compatibility
+9. **Comprehensive Reporting** - Multiple reporter formats
+10. **Visual Regression** - Screenshot comparison capabilities
+11. **Performance Testing** - Built-in performance monitoring
+12. **API Testing** - API testing utilities and examples
 
 ## Contributing
 

@@ -46,7 +46,7 @@ export class ProductsPage extends BasePage {
     const badge = this.getByDataTestId('shopping-cart-badge');
     if (await badge.isVisible()) {
       const text = await badge.textContent();
-      return parseInt(text || '0', 10);
+      return parseInt(text ?? '0', 10);
     }
     return 0;
   }

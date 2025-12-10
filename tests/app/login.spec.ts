@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/test-fixtures';
+import { test } from '../../fixtures/test-fixtures';
 import { getUser, INVALID_CREDENTIALS } from '../../data/users';
 
 test.describe('Login Tests', () => {
@@ -15,6 +15,8 @@ test.describe('Login Tests', () => {
 
     // Then - User should be on the products page
     await productsPage.expectOnProductsPage();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    expect(productsPage.getCurrentUrl()).toContain('/inventory.html');
   });
 
   test('should display error message for wrong password', async ({ loginPage }) => {
@@ -31,6 +33,8 @@ test.describe('Login Tests', () => {
     await loginPage.assertErrorMessage(
       'Username and password do not match any user in this service'
     );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    expect(loginPage.getCurrentUrl()).not.toContain('/inventory.html');
   });
 
   test('should display locked out error message for locked_out_user', async ({ loginPage }) => {
@@ -43,6 +47,8 @@ test.describe('Login Tests', () => {
 
     // Then - Locked out error message should be displayed
     await loginPage.assertErrorMessage('Sorry, this user has been locked out.');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    expect(loginPage.getCurrentUrl()).not.toContain('/inventory.html');
   });
 });
 

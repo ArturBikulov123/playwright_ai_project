@@ -42,7 +42,7 @@ export class CartPage extends BasePage {
    */
   async getCartItemCount(): Promise<number> {
     const cartItems = this.page.locator('.cart_item');
-    return await cartItems.count();
+    return cartItems.count();
   }
 }
 

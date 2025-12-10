@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/test-fixtures';
 
 test.describe('Cart Tests', () => {
   test('should add single item to cart and verify it appears in cart', async ({
-    loggedInUser,
+    _loggedInUser,
     productsPage,
     cartPage,
   }) => {
@@ -17,10 +17,11 @@ test.describe('Cart Tests', () => {
 
     // Then - Cart should contain the added item
     await cartPage.expectCartItem('Sauce Labs Backpack');
+    expect(await cartPage.getCartItemCount()).toBe(1);
   });
 
   test('should add two items and remove one from cart', async ({
-    loggedInUser,
+    _loggedInUser,
     productsPage,
     cartPage,
   }) => {
@@ -44,7 +45,7 @@ test.describe('Cart Tests', () => {
   });
 
   test('should verify cart badge count matches items in cart', async ({
-    loggedInUser,
+    _loggedInUser,
     productsPage,
     cartPage,
   }) => {
