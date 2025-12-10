@@ -26,8 +26,37 @@ export interface EnvConfig {
   traceMode: 'off' | 'on' | 'on-first-retry';
 }
 
+/**
+ * Validate URL is HTTPS to prevent insecure connections
+ * SECURITY: Enforces HTTPS for all URLs
+ */
+function validateHttpsUrl(url: string, key: string): string {
+  if (!url) {
+    return url;
+  }
+  
+  // Allow localhost for development
+  const isLocalhost = /^https?:\/\/localhost(:\d+)?(\/|$)/i.test(url) || 
+                     /^https?:\/\/127\.0\.0\.1(:\d+)?(\/|$)/i.test(url) ||
+                     /^https?:\/\/::1(:\d+)?(\/|$)/i.test(url);
+  
+  if (!isLocalhost && !url.startsWith('https://')) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`Security violation: ${key} must use HTTPS in production. Current value: ${url}`);
+    }
+    logger.warn(`Security warning: ${key} uses HTTP instead of HTTPS. This is insecure and not allowed in production.`);
+  }
+  
+  return url;
+}
+
 function getEnv(key: string, defaultValue: string): string {
-  return process.env[key] ?? defaultValue;
+  const value = process.env[key] ?? defaultValue;
+  // Validate HTTPS for URL environment variables
+  if (key.includes('URL') || key.includes('URL')) {
+    return validateHttpsUrl(value, key);
+  }
+  return value;
 }
 
 function getBooleanEnv(key: string, defaultValue: boolean): boolean {
@@ -100,5 +129,20 @@ export const envConfig: EnvConfig = {
 // Set logger level based on environment
 logger.setLogLevel(envConfig.logLevel);
 
-logger.info('Environment configuration loaded', envConfig);
+// SECURITY: Sanitize envConfig before logging to prevent exposing sensitive values
+// Only log non-sensitive configuration values
+const sanitizedConfig = {
+  baseUrl: envConfig.baseUrl.replace(/\/\/[^@]+@/, '//***:***@'), // Mask credentials in URLs
+  timeout: envConfig.timeout,
+  expectTimeout: envConfig.expectTimeout,
+  workers: envConfig.workers,
+  retries: envConfig.retries,
+  ci: envConfig.ci,
+  logLevel: envConfig.logLevel,
+  screenshotMode: envConfig.screenshotMode,
+  videoMode: envConfig.videoMode,
+  traceMode: envConfig.traceMode,
+};
+
+logger.info('Environment configuration loaded', sanitizedConfig);
 

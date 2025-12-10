@@ -19,10 +19,28 @@ export class LoginPage extends BasePage {
 
   /**
    * Perform login action
+   * SECURITY: Validates input to prevent injection attacks
    * @param username - The username to enter
    * @param password - The password to enter
    */
   async login(username: string, password: string): Promise<void> {
+    // SECURITY: Input validation
+    if (!username || typeof username !== 'string') {
+      throw new Error('Username must be a non-empty string');
+    }
+    if (!password || typeof password !== 'string') {
+      throw new Error('Password must be a non-empty string');
+    }
+    
+    // Length validation to prevent DoS via extremely long inputs
+    if (username.length > 255) {
+      throw new Error('Username exceeds maximum length of 255 characters');
+    }
+    if (password.length > 2048) {
+      throw new Error('Password exceeds maximum length of 2048 characters');
+    }
+    
+    // Playwright's fill method handles XSS protection, but we validate input anyway
     await this.page.fill('#user-name', username);
     await this.page.fill('#password', password);
     await this.page.click('#login-button');

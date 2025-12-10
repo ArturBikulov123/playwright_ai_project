@@ -19,7 +19,12 @@ export function generateUser() {
     password: faker.internet.password({ length: 12 }),
     phone: faker.phone.number(),
   };
-  logger.debug('Generated random user data', { username: user.username });
+  // SECURITY: Only log non-sensitive fields to prevent credential exposure
+  logger.debug('Generated random user data', { 
+    username: user.username,
+    email: user.email,
+    // Intentionally omit password and other sensitive fields
+  });
   return user;
 }
 
@@ -37,7 +42,8 @@ export function generateOrder() {
     state: faker.location.state(),
     country: faker.location.country(),
   };
-  logger.debug('Generated random order data', { zipCode: order.zipCode });
+  // SECURITY: Log minimal non-sensitive data
+  logger.debug('Generated random order data');
   return order;
 }
 

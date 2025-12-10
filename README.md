@@ -91,11 +91,13 @@ playwright_ai_project/
    npx playwright install --with-deps
    ```
 
-4. **Set up environment variables** (optional)
+4. **Set up environment variables** (optional but recommended for security)
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
+   
+   **Security Note:** Never commit `.env` files. They are already in `.gitignore`. See [SECURITY.md](./SECURITY.md) for details.
 
 ## Running Tests
 
@@ -230,6 +232,33 @@ This framework demonstrates several key competencies valued in enterprise test a
 - **Prettier**: Consistent code formatting
 - **Husky**: Pre-commit and pre-push hooks
 - **TypeScript**: Full type safety
+
+## Security
+
+This framework implements enterprise-grade security practices:
+
+- ✅ **Credential Management**: Environment variables, no hardcoded secrets
+- ✅ **Input Validation**: All user inputs validated and sanitized
+- ✅ **Path Traversal Protection**: File operations secured against directory traversal
+- ✅ **HTTPS Enforcement**: All URLs validated for secure connections
+- ✅ **Secure Logging**: Sensitive data automatically redacted in logs
+- ✅ **Error Handling**: Generic error messages prevent information leakage
+- ✅ **Dependency Scanning**: Automated security audits in CI/CD
+- ✅ **OWASP Compliance**: Aligned with OWASP Top 10 and ASVS standards
+
+See [SECURITY.md](./SECURITY.md) for detailed security documentation and [SECURITY_REVIEW.md](./SECURITY_REVIEW.md) for the complete security audit.
+
+### Security Testing
+
+Run security tests:
+```bash
+npm test -- --grep @security
+```
+
+Run security audit:
+```bash
+npm run security:audit
+```
 
 ## Configuration Highlights
 

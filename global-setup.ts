@@ -46,7 +46,10 @@ async function globalSetup(config: FullConfig): Promise<void> {
     });
     
     if (!response?.ok()) {
-      const errorMessage = `Application health check returned status: ${response.status()}`;
+      // SECURITY: Don't expose detailed error information in production
+      const errorMessage = process.env.NODE_ENV === 'production'
+        ? 'Application health check failed'
+        : `Application health check returned status: ${response.status()}`;
       if (failOnHealthCheck) {
         await browser.close();
         throw new Error(errorMessage);
@@ -58,14 +61,20 @@ async function globalSetup(config: FullConfig): Promise<void> {
     
     await browser.close();
   } catch (error) {
+    // SECURITY: Sanitize error messages to prevent leaking sensitive information
     const errorMessage = error instanceof Error ? error.message : String(error);
+    // Don't expose full error details in production
+    const sanitizedError = process.env.NODE_ENV === 'production'
+      ? 'Application health check failed'
+      : errorMessage;
+    
     if (failOnHealthCheck) {
-      logger.error('Application health check failed, failing setup', { error: errorMessage });
-      throw error;
+      logger.error('Application health check failed, failing setup', { error: sanitizedError });
+      throw new Error(sanitizedError);
     }
     // Log warning but don't fail the setup - allows tests to run even if health check fails
     logger.warn('Application health check failed, continuing with test execution', { 
-      error: errorMessage 
+      error: sanitizedError 
     });
   }
 

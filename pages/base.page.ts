@@ -9,9 +9,27 @@ export class BasePage {
 
   /**
    * Navigate to a specific path using baseURL
+   * SECURITY: Validates path to prevent open redirects and injection
    * @param path - The path to navigate to (e.g., '/inventory.html')
    */
   async goto(path: string = '/'): Promise<void> {
+    // SECURITY: Validate path to prevent open redirects and injection
+    if (!path || typeof path !== 'string') {
+      throw new Error('Invalid path: path must be a non-empty string');
+    }
+    
+    // Prevent absolute URLs that could be used for open redirects
+    // Only allow relative paths or paths starting with /
+    if (path.match(/^https?:\/\//i)) {
+      throw new Error('Security violation: Absolute URLs not allowed. Use relative paths only.');
+    }
+    
+    // Basic path validation - allow alphanumeric, slashes, dashes, underscores, dots, query params
+    // This is a test framework, so we allow more flexibility than production code
+    if (!path.match(/^[/]?[a-zA-Z0-9/._?-]*$/)) {
+      throw new Error('Invalid path format detected');
+    }
+    
     await this.page.goto(path);
   }
 

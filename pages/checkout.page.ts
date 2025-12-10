@@ -12,21 +12,40 @@ export class CheckoutPage extends BasePage {
 
   /**
    * Fill customer information on checkout step one
+   * SECURITY: Validates and sanitizes input to prevent injection attacks
    * @param firstName - Customer first name
    * @param lastName - Customer last name
    * @param zipCode - Customer zip code
-   * @throws Error if any required field is empty
+   * @throws Error if any required field is empty or invalid
    */
   async fillCustomerInfo(firstName: string, lastName: string, zipCode: string): Promise<void> {
-    if (!firstName || firstName.trim().length === 0) {
+    // SECURITY: Input validation
+    if (!firstName || typeof firstName !== 'string' || firstName.trim().length === 0) {
       throw new Error('First name is required and cannot be empty');
     }
-    if (!lastName || lastName.trim().length === 0) {
+    if (!lastName || typeof lastName !== 'string' || lastName.trim().length === 0) {
       throw new Error('Last name is required and cannot be empty');
     }
-    if (!zipCode || zipCode.trim().length === 0) {
+    if (!zipCode || typeof zipCode !== 'string' || zipCode.trim().length === 0) {
       throw new Error('Zip code is required and cannot be empty');
     }
+    
+    // Length validation to prevent DoS
+    if (firstName.length > 100) {
+      throw new Error('First name exceeds maximum length of 100 characters');
+    }
+    if (lastName.length > 100) {
+      throw new Error('Last name exceeds maximum length of 100 characters');
+    }
+    if (zipCode.length > 20) {
+      throw new Error('Zip code exceeds maximum length of 20 characters');
+    }
+    
+    // Basic format validation for zip code (alphanumeric and common separators)
+    if (!zipCode.match(/^[a-zA-Z0-9\s-]+$/)) {
+      throw new Error('Invalid zip code format');
+    }
+    
     await this.getByDataTestId('firstName').fill(firstName);
     await this.getByDataTestId('lastName').fill(lastName);
     await this.getByDataTestId('postalCode').fill(zipCode);

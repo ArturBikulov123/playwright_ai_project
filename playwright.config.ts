@@ -35,6 +35,11 @@ export default defineConfig({
     video: envConfig.videoMode,
     actionTimeout: envConfig.timeout,
     navigationTimeout: envConfig.timeout,
+    // SECURITY: Configure secure cookie handling
+    // In production, ensure cookies use Secure, HttpOnly, and SameSite flags
+    // Note: Playwright doesn't directly set these, but we can validate them in tests
+    // This is a reminder to check cookie security in application tests
+    ignoreHTTPSErrors: false, // SECURITY: Enforce HTTPS certificate validation
   },
   
   timeout: envConfig.timeout,
