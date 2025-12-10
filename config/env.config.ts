@@ -15,15 +15,10 @@ if (configResult?.error && configResult.error.code !== 'ENOENT') {
 
 export interface EnvConfig {
   baseUrl: string;
-  apiBaseUrl: string;
-  headless: boolean;
-  slowMo: number;
   timeout: number;
   expectTimeout: number;
-  browser: 'chromium' | 'firefox' | 'webkit';
   workers: number | undefined;
   retries: number;
-  reporter: string;
   ci: boolean;
   logLevel: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
   screenshotMode: 'off' | 'on' | 'only-on-failure';
@@ -63,15 +58,10 @@ function getUndefinedOrNumberEnv(key: string): number | undefined {
 
 export const envConfig: EnvConfig = {
   baseUrl: getEnv('BASE_URL', 'https://www.saucedemo.com'),
-  apiBaseUrl: getEnv('API_BASE_URL', 'https://www.saucedemo.com/api'),
-  headless: getBooleanEnv('HEADLESS', true),
-  slowMo: getNumberEnv('SLOW_MO', 0),
   timeout: getNumberEnv('TIMEOUT', 30000),
   expectTimeout: getNumberEnv('EXPECT_TIMEOUT', 10000),
-  browser: (getEnv('BROWSER', 'chromium') as 'chromium' | 'firefox' | 'webkit'),
   workers: getUndefinedOrNumberEnv('WORKERS'),
   retries: getNumberEnv('RETRIES', process.env.CI ? 2 : 0),
-  reporter: getEnv('REPORTER', 'html'),
   ci: getBooleanEnv('CI', !!process.env.CI),
   logLevel: (getEnv('LOG_LEVEL', 'INFO') as 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'),
   screenshotMode: (getEnv('SCREENSHOT_MODE', 'only-on-failure') as 'off' | 'on' | 'only-on-failure'),

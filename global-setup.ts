@@ -14,14 +14,14 @@ async function globalSetup(config: FullConfig): Promise<void> {
   logger.step('Global Setup');
   logger.info('Starting global setup...');
 
-  // Example: Validate environment
+  // Validate environment
   const baseURL = config.projects[0]?.use?.baseURL;
   if (!baseURL) {
     throw new Error('Base URL is not configured');
   }
   logger.info(`Base URL: ${baseURL}`);
 
-  // Example: Health check - verify the application is accessible
+  // Health check - verify the application is accessible
   // Non-blocking: if health check fails, log warning but don't fail the setup
   try {
     // Use environment variable to disable headless shell if set
@@ -54,12 +54,7 @@ async function globalSetup(config: FullConfig): Promise<void> {
     logger.warn('Application health check failed, continuing with test execution', { 
       error: error instanceof Error ? error.message : String(error) 
     });
-    // Don't throw - allow tests to proceed
   }
-
-  // Example: Setup test data or API authentication
-  // await setupTestData();
-  // await authenticateAPI();
 
   logger.info('Global setup completed successfully');
 }

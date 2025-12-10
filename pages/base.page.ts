@@ -16,17 +16,6 @@ export class BasePage {
   }
 
   /**
-   * Wait for page title to contain specific text
-   * @param text - Text that should be in the page title
-   */
-  async waitForTitleContains(text: string): Promise<void> {
-    await this.page.waitForFunction(
-      (expectedText: string) => document.title.includes(expectedText),
-      text
-    );
-  }
-
-  /**
    * Get element by data-test attribute
    * Centralizes data test selector pattern
    * @param id - The data-test attribute value
@@ -34,13 +23,6 @@ export class BasePage {
    */
   getByDataTestId(id: string): Locator {
     return this.page.locator(`[data-test="${id}"]`);
-  }
-
-  /**
-   * Get page title
-   */
-  async getTitle(): Promise<string> {
-    return this.page.title();
   }
 
   /**

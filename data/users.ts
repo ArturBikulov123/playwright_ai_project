@@ -20,34 +20,9 @@ export const USERS = {
     password: 'secret_sauce',
     description: 'User account that is locked out',
   } as User,
-  PROBLEM: {
-    username: 'problem_user',
-    password: 'secret_sauce',
-    description: 'User with problematic behavior',
-  } as User,
-  PERFORMANCE_GLITCH: {
-    username: 'performance_glitch_user',
-    password: 'secret_sauce',
-    description: 'User that experiences performance issues',
-  } as User,
-  ERROR: {
-    username: 'error_user',
-    password: 'secret_sauce',
-    description: 'User that triggers error states',
-  } as User,
-  VISUAL: {
-    username: 'visual_user',
-    password: 'secret_sauce',
-    description: 'User for visual testing scenarios',
-  } as User,
 } as const;
 
 export const INVALID_CREDENTIALS = {
-  INVALID_USERNAME: {
-    username: 'invalid_user',
-    password: 'secret_sauce',
-    description: 'Non-existent username',
-  } as User,
   INVALID_PASSWORD: {
     username: 'standard_user',
     password: 'wrong_password',
