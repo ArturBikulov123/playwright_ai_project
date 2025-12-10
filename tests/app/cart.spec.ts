@@ -2,18 +2,17 @@ import { test, expect } from '../../fixtures/test-fixtures';
 
 test.describe('Cart Tests', () => {
   test('should add single item to cart and verify it appears in cart', async ({
-    _loggedInUser,
-    productsPage,
+    loggedInUser,
     cartPage,
   }) => {
     // Given - User is logged in and on products page
-    await productsPage.expectOnProductsPage();
+    await loggedInUser.productsPage.expectOnProductsPage();
 
     // When - User adds a product to cart
-    await productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await loggedInUser.productsPage.addProductToCartByName('Sauce Labs Backpack');
 
     // And - User opens the cart
-    await productsPage.openCart();
+    await loggedInUser.productsPage.openCart();
 
     // Then - Cart should contain the added item
     await cartPage.expectCartItem('Sauce Labs Backpack');
@@ -21,19 +20,18 @@ test.describe('Cart Tests', () => {
   });
 
   test('should add two items and remove one from cart', async ({
-    _loggedInUser,
-    productsPage,
+    loggedInUser,
     cartPage,
   }) => {
     // Given - User is logged in and on products page
-    await productsPage.expectOnProductsPage();
+    await loggedInUser.productsPage.expectOnProductsPage();
 
     // When - User adds two products to cart
-    await productsPage.addProductToCartByName('Sauce Labs Backpack');
-    await productsPage.addProductToCartByName('Sauce Labs Bike Light');
+    await loggedInUser.productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await loggedInUser.productsPage.addProductToCartByName('Sauce Labs Bike Light');
 
     // And - User opens the cart
-    await productsPage.openCart();
+    await loggedInUser.productsPage.openCart();
 
     // And - User removes one item
     await cartPage.removeItem('Sauce Labs Backpack');
@@ -45,24 +43,23 @@ test.describe('Cart Tests', () => {
   });
 
   test('should verify cart badge count matches items in cart', async ({
-    _loggedInUser,
-    productsPage,
+    loggedInUser,
     cartPage,
   }) => {
     // Given - User is logged in and on products page
-    await productsPage.expectOnProductsPage();
+    await loggedInUser.productsPage.expectOnProductsPage();
 
     // When - User adds multiple products to cart
-    await productsPage.addProductToCartByName('Sauce Labs Backpack');
-    await productsPage.addProductToCartByName('Sauce Labs Bike Light');
-    await productsPage.addProductToCartByName('Sauce Labs Bolt T-Shirt');
+    await loggedInUser.productsPage.addProductToCartByName('Sauce Labs Backpack');
+    await loggedInUser.productsPage.addProductToCartByName('Sauce Labs Bike Light');
+    await loggedInUser.productsPage.addProductToCartByName('Sauce Labs Bolt T-Shirt');
 
     // Then - Cart badge should show correct count
-    const badgeCount = await productsPage.getCartBadgeCount();
+    const badgeCount = await loggedInUser.productsPage.getCartBadgeCount();
     expect(badgeCount).toBe(3);
 
     // When - User opens cart
-    await productsPage.openCart();
+    await loggedInUser.productsPage.openCart();
 
     // Then - Cart item count should match badge count
     const cartItemCount = await cartPage.getCartItemCount();
