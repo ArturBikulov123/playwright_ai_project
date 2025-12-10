@@ -15,8 +15,18 @@ export class CheckoutPage extends BasePage {
    * @param firstName - Customer first name
    * @param lastName - Customer last name
    * @param zipCode - Customer zip code
+   * @throws Error if any required field is empty
    */
   async fillCustomerInfo(firstName: string, lastName: string, zipCode: string): Promise<void> {
+    if (!firstName || firstName.trim().length === 0) {
+      throw new Error('First name is required and cannot be empty');
+    }
+    if (!lastName || lastName.trim().length === 0) {
+      throw new Error('Last name is required and cannot be empty');
+    }
+    if (!zipCode || zipCode.trim().length === 0) {
+      throw new Error('Zip code is required and cannot be empty');
+    }
     await this.getByDataTestId('firstName').fill(firstName);
     await this.getByDataTestId('lastName').fill(lastName);
     await this.getByDataTestId('postalCode').fill(zipCode);

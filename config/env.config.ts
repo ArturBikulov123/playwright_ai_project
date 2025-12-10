@@ -38,15 +38,6 @@ function getBooleanEnv(key: string, defaultValue: boolean): boolean {
   return value.toLowerCase() === 'true';
 }
 
-function getNumberEnv(key: string, defaultValue: number): number {
-  const value = process.env[key];
-  if (value === undefined) {
-    return defaultValue;
-  }
-  const parsed = parseInt(value, 10);
-  return isNaN(parsed) ? defaultValue : parsed;
-}
-
 function getUndefinedOrNumberEnv(key: string): number | undefined {
   const value = process.env[key];
   if (value === undefined || value === 'undefined') {
@@ -56,17 +47,54 @@ function getUndefinedOrNumberEnv(key: string): number | undefined {
   return isNaN(parsed) ? undefined : parsed;
 }
 
+function getNumberEnvWithWarning(key: string, defaultValue: number): number {
+  const value = process.env[key];
+  if (value === undefined) {
+    return defaultValue;
+  }
+  const parsed = parseInt(value, 10);
+  if (isNaN(parsed)) {
+    logger.warn(`Invalid numeric value "${value}" for ${key}, using default ${defaultValue}`);
+    return defaultValue;
+  }
+  return parsed;
+}
+
+function getEnumEnv<T extends string>(
+  key: string,
+  defaultValue: T,
+  validValues: readonly T[]
+): T {
+  const value = getEnv(key, defaultValue);
+  if (!validValues.includes(value as T)) {
+    logger.warn(
+      `Invalid value "${value}" for ${key}. Valid values: ${validValues.join(', ')}. Using default "${defaultValue}"`
+    );
+    return defaultValue;
+  }
+  return value as T;
+}
+
 export const envConfig: EnvConfig = {
   baseUrl: getEnv('BASE_URL', 'https://www.saucedemo.com'),
-  timeout: getNumberEnv('TIMEOUT', 30000),
-  expectTimeout: getNumberEnv('EXPECT_TIMEOUT', 10000),
+  timeout: getNumberEnvWithWarning('TIMEOUT', 30000),
+  expectTimeout: getNumberEnvWithWarning('EXPECT_TIMEOUT', 10000),
   workers: getUndefinedOrNumberEnv('WORKERS'),
-  retries: getNumberEnv('RETRIES', process.env.CI ? 2 : 0),
+  retries: getNumberEnvWithWarning('RETRIES', process.env.CI ? 2 : 0),
   ci: getBooleanEnv('CI', !!process.env.CI),
-  logLevel: (getEnv('LOG_LEVEL', 'INFO') as 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'),
-  screenshotMode: (getEnv('SCREENSHOT_MODE', 'only-on-failure') as 'off' | 'on' | 'only-on-failure'),
-  videoMode: (getEnv('VIDEO_MODE', 'retain-on-failure') as 'off' | 'on' | 'on-first-retry' | 'retain-on-failure'),
-  traceMode: (getEnv('TRACE_MODE', 'on-first-retry') as 'off' | 'on' | 'on-first-retry'),
+  logLevel: getEnumEnv('LOG_LEVEL', 'INFO', ['DEBUG', 'INFO', 'WARN', 'ERROR'] as const),
+  screenshotMode: getEnumEnv('SCREENSHOT_MODE', 'only-on-failure', [
+    'off',
+    'on',
+    'only-on-failure',
+  ] as const),
+  videoMode: getEnumEnv('VIDEO_MODE', 'retain-on-failure', [
+    'off',
+    'on',
+    'on-first-retry',
+    'retain-on-failure',
+  ] as const),
+  traceMode: getEnumEnv('TRACE_MODE', 'on-first-retry', ['off', 'on', 'on-first-retry'] as const),
 };
 
 // Set logger level based on environment

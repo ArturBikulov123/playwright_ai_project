@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures/test-fixtures';
 
 test.describe('Cart Tests', () => {
-  test('should add single item to cart and verify it appears in cart', async ({
+  test('should add single item to cart and verify it appears in cart @smoke @regression', async ({
     loggedInUser,
     cartPage,
   }) => {
@@ -19,7 +19,7 @@ test.describe('Cart Tests', () => {
     expect(await cartPage.getCartItemCount()).toBe(1);
   });
 
-  test('should add two items and remove one from cart', async ({
+  test('should add two items and remove one from cart @regression', async ({
     loggedInUser,
     cartPage,
   }) => {
@@ -42,7 +42,7 @@ test.describe('Cart Tests', () => {
     expect(itemCount).toBe(1);
   });
 
-  test('should verify cart badge count matches items in cart', async ({
+  test('should verify cart badge count matches items in cart @regression', async ({
     loggedInUser,
     cartPage,
   }) => {

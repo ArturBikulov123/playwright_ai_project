@@ -27,6 +27,7 @@ export class BasePage {
 
   /**
    * Get current URL
+   * @returns The current page URL as a string
    */
   getCurrentUrl(): string {
     return this.page.url();

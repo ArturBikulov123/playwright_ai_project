@@ -9,7 +9,7 @@ import { logger } from '../../utils/logger';
  * so some tests are kept as examples for API testing patterns.
  */
 test.describe('API Tests', () => {
-  test('should handle API errors gracefully', async ({ request }) => {
+  test('should handle API errors gracefully @api @regression', async ({ request }) => {
     logger.step('API Error Handling');
     
     // Example: Test error handling - this endpoint doesn't exist, so we expect 404 or 405

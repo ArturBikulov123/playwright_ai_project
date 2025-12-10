@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/test-fixtures';
 import { getUser, INVALID_CREDENTIALS } from '../../data/users';
 
 test.describe('Login Tests', () => {
-  test('should login successfully with standard_user and land on products page', async ({
+  test('should login successfully with standard_user and land on products page @smoke @regression', async ({
     loginPage,
     productsPage,
   }) => {
@@ -16,7 +16,7 @@ test.describe('Login Tests', () => {
     expect(currentUrl).toContain('/inventory.html');
   });
 
-  test('should display error message for wrong password', async ({ loginPage }) => {
+  test('should display error message for wrong password @regression', async ({ loginPage }) => {
     await loginPage.goto();
 
     await loginPage.login(
@@ -31,7 +31,7 @@ test.describe('Login Tests', () => {
     expect(currentUrl).not.toContain('/inventory.html');
   });
 
-  test('should display locked out error message for locked_out_user', async ({ loginPage }) => {
+  test('should display locked out error message for locked_out_user @regression', async ({ loginPage }) => {
     await loginPage.goto();
 
     const lockedOutUser = getUser('LOCKED_OUT');

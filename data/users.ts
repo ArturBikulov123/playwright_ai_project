@@ -32,10 +32,17 @@ export const INVALID_CREDENTIALS = {
 
 /**
  * Get user credentials by type
- * @param type - User type ('standard', 'locked_out', 'problem', etc.)
- * @returns User object or undefined if not found
+ * @param type - User type ('STANDARD', 'LOCKED_OUT', etc.)
+ * @returns User object
+ * @throws Error if invalid user type is provided
  */
 export function getUser(type: keyof typeof USERS): User {
+  if (!(type in USERS)) {
+    const validTypes = Object.keys(USERS).join(', ');
+    throw new Error(
+      `Invalid user type: "${type}". Valid types are: ${validTypes}`
+    );
+  }
   return USERS[type];
 }
 

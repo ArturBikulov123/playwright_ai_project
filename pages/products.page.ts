@@ -44,11 +44,15 @@ export class ProductsPage extends BasePage {
    */
   async getCartBadgeCount(): Promise<number> {
     const badge = this.getByDataTestId('shopping-cart-badge');
-    if (await badge.isVisible()) {
+    try {
+      // Wait for badge to appear (with short timeout) or return 0 if it doesn't
+      await badge.waitFor({ state: 'visible', timeout: 2000 });
       const text = await badge.textContent();
       return parseInt(text ?? '0', 10);
+    } catch {
+      // Badge is not visible, return 0
+      return 0;
     }
-    return 0;
   }
 }
 
