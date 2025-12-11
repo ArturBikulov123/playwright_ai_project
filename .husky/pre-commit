@@ -1,4 +1,6 @@
-echo "🔍 Running linter..."
+# Run linting before commit
 npm run lint
 
-echo "✅ Pre-commit checks passed!"
+# Run smoke tests only (faster pre-commit check)
+# For full test suite, use: npm run test:shard:all
+npm run test:smoke

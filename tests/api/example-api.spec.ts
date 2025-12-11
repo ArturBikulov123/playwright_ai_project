@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { ApiHelpers } from '../../utils/api-helpers';
-import { logger } from '../../utils/logger';
+import { test, expect } from '@playwright/test'
+import { ApiHelpers } from '../../utils/api-helpers'
+import { logger } from '../../utils/logger'
 
 /**
  * Example API test suite
@@ -10,13 +10,13 @@ import { logger } from '../../utils/logger';
  */
 test.describe('API Tests', () => {
   test('should handle API errors gracefully @api @regression', async ({ request }) => {
-    logger.step('API Error Handling');
-    
+    logger.step('API Error Handling')
+
     // Example: Test error handling - this endpoint doesn't exist, so we expect 404 or 405
-    const response = await ApiHelpers.get(request, '/api/nonexistent');
-    const status = response.status();
+    const response = await ApiHelpers.get(request, '/api/nonexistent')
+    const status = response.status()
     // Accept either 404 (Not Found) or 405 (Method Not Allowed) as valid error responses
-    expect([404, 405]).toContain(status);
-  });
-});
+    expect([404, 405]).toContain(status)
+  })
+})
 

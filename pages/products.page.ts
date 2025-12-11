@@ -1,5 +1,5 @@
-import { Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { Page } from '@playwright/test'
+import { BasePage } from './base.page'
 
 /**
  * ProductsPage - Page Object Model for SauceDemo products/inventory page
@@ -7,17 +7,17 @@ import { BasePage } from './base.page';
  */
 export class ProductsPage extends BasePage {
   constructor(page: Page) {
-    super(page);
+    super(page)
   }
 
   /**
    * Assert that we are on the products page
    */
   async expectOnProductsPage(): Promise<void> {
-    await this.getByDataTestId('inventory-container').waitFor({ state: 'visible' });
-    const url = this.getCurrentUrl();
+    await this.getByDataTestId('inventory-container').waitFor({ state: 'visible' })
+    const url = this.getCurrentUrl()
     if (!url.includes('/inventory.html')) {
-      throw new Error(`Expected to be on products page but was on ${url}`);
+      throw new Error(`Expected to be on products page but was on ${url}`)
     }
   }
 
@@ -26,16 +26,16 @@ export class ProductsPage extends BasePage {
    * @param name - The name of the product to add
    */
   async addProductToCartByName(name: string): Promise<void> {
-    const productItem = this.page.locator('.inventory_item').filter({ hasText: name });
-    const addToCartButton = productItem.locator('button').filter({ hasText: /Add to cart/i });
-    await addToCartButton.click();
+    const productItem = this.page.locator('.inventory_item').filter({ hasText: name })
+    const addToCartButton = productItem.locator('button').filter({ hasText: /Add to cart/i })
+    await addToCartButton.click()
   }
 
   /**
    * Open the shopping cart
    */
   async openCart(): Promise<void> {
-    await this.getByDataTestId('shopping-cart-link').click();
+    await this.getByDataTestId('shopping-cart-link').click()
   }
 
   /**
@@ -43,15 +43,15 @@ export class ProductsPage extends BasePage {
    * @returns The number displayed on the cart badge, or 0 if badge is not visible
    */
   async getCartBadgeCount(): Promise<number> {
-    const badge = this.getByDataTestId('shopping-cart-badge');
+    const badge = this.getByDataTestId('shopping-cart-badge')
     try {
       // Wait for badge to appear (with short timeout) or return 0 if it doesn't
-      await badge.waitFor({ state: 'visible', timeout: 2000 });
-      const text = await badge.textContent();
-      return parseInt(text ?? '0', 10);
+      await badge.waitFor({ state: 'visible', timeout: 2000 })
+      const text = await badge.textContent()
+      return parseInt(text ?? '0', 10)
     } catch {
       // Badge is not visible, return 0
-      return 0;
+      return 0
     }
   }
 }

@@ -1,7 +1,7 @@
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import playwright from 'eslint-plugin-playwright';
-import unusedImports from 'eslint-plugin-unused-imports';
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import playwright from 'eslint-plugin-playwright'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 export default tseslint.config(
   {
@@ -12,6 +12,7 @@ export default tseslint.config(
       'playwright-report/**',
       '*.config.ts',
       '*.config.js',
+      'scripts/**',
     ],
   },
   eslint.configs.recommended,
@@ -34,7 +35,7 @@ export default tseslint.config(
       // Prevent skipping tests - CRITICAL
       'playwright/no-skipped-test': 'error',
       'playwright/no-focused-test': 'error',
-      
+
       // Prevent skipping code
       '@typescript-eslint/ban-ts-comment': [
         'error',
@@ -51,7 +52,7 @@ export default tseslint.config(
           allow: ['warn', 'error', 'debug', 'info'],
         },
       ],
-      
+
       // TypeScript best practices
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -66,7 +67,7 @@ export default tseslint.config(
           destructuredArrayIgnorePattern: '^_',
         },
       ],
-      
+
       // Dead code detection - unused imports
       'unused-imports/no-unused-imports': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
@@ -76,7 +77,7 @@ export default tseslint.config(
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      
+
       // Code quality rules
       'no-debugger': 'error',
       'no-alert': 'error',
@@ -88,7 +89,7 @@ export default tseslint.config(
       'curly': ['error', 'all'],
       'no-throw-literal': 'error',
       'prefer-promise-reject-errors': 'error',
-      
+
       // Best practices
       'no-return-await': 'off',
       '@typescript-eslint/return-await': ['error', 'in-try-catch'],
@@ -103,10 +104,10 @@ export default tseslint.config(
           object: true,
         },
       ],
-      
+
       // Import/export rules
       'no-duplicate-imports': 'error',
-      
+
       // Playwright specific
       'playwright/expect-expect': 'error',
       'playwright/missing-playwright-await': 'error',
@@ -121,4 +122,4 @@ export default tseslint.config(
       '@typescript-eslint/no-non-null-assertion': 'off',
     },
   }
-);
+)

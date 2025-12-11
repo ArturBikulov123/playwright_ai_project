@@ -5,19 +5,19 @@
  */
 
 export interface User {
-  username: string;
-  password: string;
-  description: string;
+  username: string
+  password: string
+  description: string
 }
 
 // Load credentials from environment variables with secure defaults for test environments
 // SECURITY: Never commit real credentials. Use .env file (not tracked) for production values
 function getEnvCredential(key: string, defaultValue: string): string {
-  const value = process.env[key];
+  const value = process.env[key]
   if (!value && process.env.NODE_ENV === 'production') {
-    throw new Error(`Required environment variable ${key} is not set`);
+    throw new Error(`Required environment variable ${key} is not set`)
   }
-  return value ?? defaultValue;
+  return value ?? defaultValue
 }
 
 export const USERS = {
@@ -31,7 +31,7 @@ export const USERS = {
     password: getEnvCredential('TEST_USER_LOCKED_OUT_PASSWORD', 'secret_sauce'),
     description: 'User account that is locked out',
   } as User,
-} as const;
+} as const
 
 export const INVALID_CREDENTIALS = {
   INVALID_PASSWORD: {
@@ -39,7 +39,7 @@ export const INVALID_CREDENTIALS = {
     password: 'wrong_password',
     description: 'Valid username with wrong password',
   } as User,
-} as const;
+} as const
 
 /**
  * Get user credentials by type
@@ -49,16 +49,16 @@ export const INVALID_CREDENTIALS = {
  */
 export function getUser(type: keyof typeof USERS): User {
   if (!(type in USERS)) {
-    const validTypes = Object.keys(USERS).join(', ');
+    const validTypes = Object.keys(USERS).join(', ')
     throw new Error(
       `Invalid user type: "${type}". Valid types are: ${validTypes}`
-    );
+    )
   }
-  return USERS[type];
+  return USERS[type]
 }
 
 /**
  * Get standard user (most commonly used)
  */
-export const standardUser = USERS.STANDARD;
+export const standardUser = USERS.STANDARD
 

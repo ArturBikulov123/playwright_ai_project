@@ -1,5 +1,5 @@
-import { FullConfig } from '@playwright/test';
-import { logger } from './utils/logger';
+import { FullConfig } from '@playwright/test'
+import { logger } from './utils/logger'
 
 /**
  * Global teardown runs once after all tests
@@ -11,15 +11,15 @@ import { logger } from './utils/logger';
  */
 
 function globalTeardown(config: FullConfig): Promise<void> {
-  logger.step('Global Teardown');
-  logger.info('Starting global teardown...');
+  logger.step('Global Teardown')
+  logger.info('Starting global teardown...')
 
-  logger.info('Test execution completed');
-  logger.info(`Test results directory: ${config.outputDir}`);
+  logger.info('Test execution completed')
+  logger.info(`Test results directory: ${config.outputDir}`)
 
-  logger.info('Global teardown completed successfully');
-  return Promise.resolve();
+  logger.info('Global teardown completed successfully')
+  return Promise.resolve()
 }
 
-export default globalTeardown;
+export default globalTeardown
 

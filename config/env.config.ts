@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
-import { logger } from '../utils/logger';
+import { config } from 'dotenv'
+import { logger } from '../utils/logger'
 
 /**
  * Environment configuration loader
@@ -7,23 +7,23 @@ import { logger } from '../utils/logger';
  */
 
 // Load environment variables from .env file
-const configResult = config({ errorOnMissingFile: false });
+const configResult = config({ errorOnMissingFile: false })
 if (configResult?.error && configResult.error.code !== 'ENOENT') {
   // Only throw if it's not a "file not found" error
-  throw configResult.error;
+  throw configResult.error
 }
 
 export interface EnvConfig {
-  baseUrl: string;
-  timeout: number;
-  expectTimeout: number;
-  workers: number | undefined;
-  retries: number;
-  ci: boolean;
-  logLevel: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
-  screenshotMode: 'off' | 'on' | 'only-on-failure';
-  videoMode: 'off' | 'on' | 'on-first-retry' | 'retain-on-failure';
-  traceMode: 'off' | 'on' | 'on-first-retry';
+  baseUrl: string
+  timeout: number
+  expectTimeout: number
+  workers: number | undefined
+  retries: number
+  ci: boolean
+  logLevel: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'
+  screenshotMode: 'off' | 'on' | 'only-on-failure'
+  videoMode: 'off' | 'on' | 'on-first-retry' | 'retain-on-failure'
+  traceMode: 'off' | 'on' | 'on-first-retry'
 }
 
 /**
@@ -32,61 +32,61 @@ export interface EnvConfig {
  */
 function validateHttpsUrl(url: string, key: string): string {
   if (!url) {
-    return url;
+    return url
   }
-  
+
   // Allow localhost for development
-  const isLocalhost = /^https?:\/\/localhost(:\d+)?(\/|$)/i.test(url) || 
+  const isLocalhost = /^https?:\/\/localhost(:\d+)?(\/|$)/i.test(url) ||
                      /^https?:\/\/127\.0\.0\.1(:\d+)?(\/|$)/i.test(url) ||
-                     /^https?:\/\/::1(:\d+)?(\/|$)/i.test(url);
-  
+                     /^https?:\/\/::1(:\d+)?(\/|$)/i.test(url)
+
   if (!isLocalhost && !url.startsWith('https://')) {
     if (process.env.NODE_ENV === 'production') {
-      throw new Error(`Security violation: ${key} must use HTTPS in production. Current value: ${url}`);
+      throw new Error(`Security violation: ${key} must use HTTPS in production. Current value: ${url}`)
     }
-    logger.warn(`Security warning: ${key} uses HTTP instead of HTTPS. This is insecure and not allowed in production.`);
+    logger.warn(`Security warning: ${key} uses HTTP instead of HTTPS. This is insecure and not allowed in production.`)
   }
-  
-  return url;
+
+  return url
 }
 
 function getEnv(key: string, defaultValue: string): string {
-  const value = process.env[key] ?? defaultValue;
+  const value = process.env[key] ?? defaultValue
   // Validate HTTPS for URL environment variables
   if (key.includes('URL')) {
-    return validateHttpsUrl(value, key);
+    return validateHttpsUrl(value, key)
   }
-  return value;
+  return value
 }
 
 function getBooleanEnv(key: string, defaultValue: boolean): boolean {
-  const value = process.env[key];
+  const value = process.env[key]
   if (value === undefined) {
-    return defaultValue;
+    return defaultValue
   }
-  return value.toLowerCase() === 'true';
+  return value.toLowerCase() === 'true'
 }
 
 function getUndefinedOrNumberEnv(key: string): number | undefined {
-  const value = process.env[key];
+  const value = process.env[key]
   if (value === undefined || value === 'undefined') {
-    return undefined;
+    return undefined
   }
-  const parsed = parseInt(value, 10);
-  return isNaN(parsed) ? undefined : parsed;
+  const parsed = parseInt(value, 10)
+  return isNaN(parsed) ? undefined : parsed
 }
 
 function getNumberEnvWithWarning(key: string, defaultValue: number): number {
-  const value = process.env[key];
+  const value = process.env[key]
   if (value === undefined) {
-    return defaultValue;
+    return defaultValue
   }
-  const parsed = parseInt(value, 10);
+  const parsed = parseInt(value, 10)
   if (isNaN(parsed)) {
-    logger.warn(`Invalid numeric value "${value}" for ${key}, using default ${defaultValue}`);
-    return defaultValue;
+    logger.warn(`Invalid numeric value "${value}" for ${key}, using default ${defaultValue}`)
+    return defaultValue
   }
-  return parsed;
+  return parsed
 }
 
 function getEnumEnv<T extends string>(
@@ -94,14 +94,14 @@ function getEnumEnv<T extends string>(
   defaultValue: T,
   validValues: readonly T[]
 ): T {
-  const value = getEnv(key, defaultValue);
+  const value = getEnv(key, defaultValue)
   if (!validValues.includes(value as T)) {
     logger.warn(
       `Invalid value "${value}" for ${key}. Valid values: ${validValues.join(', ')}. Using default "${defaultValue}"`
-    );
-    return defaultValue;
+    )
+    return defaultValue
   }
-  return value as T;
+  return value as T
 }
 
 export const envConfig: EnvConfig = {
@@ -124,10 +124,10 @@ export const envConfig: EnvConfig = {
     'retain-on-failure',
   ] as const),
   traceMode: getEnumEnv('TRACE_MODE', 'on-first-retry', ['off', 'on', 'on-first-retry'] as const),
-};
+}
 
 // Set logger level based on environment
-logger.setLogLevel(envConfig.logLevel);
+logger.setLogLevel(envConfig.logLevel)
 
 // SECURITY: Sanitize envConfig before logging to prevent exposing sensitive values
 // Only log non-sensitive configuration values
@@ -142,7 +142,7 @@ const sanitizedConfig = {
   screenshotMode: envConfig.screenshotMode,
   videoMode: envConfig.videoMode,
   traceMode: envConfig.traceMode,
-};
+}
 
-logger.info('Environment configuration loaded', sanitizedConfig);
+logger.info('Environment configuration loaded', sanitizedConfig)
 

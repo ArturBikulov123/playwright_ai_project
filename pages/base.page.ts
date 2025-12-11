@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test'
 
 /**
  * BasePage - Base class for all page objects
@@ -15,22 +15,22 @@ export class BasePage {
   async goto(path: string = '/'): Promise<void> {
     // SECURITY: Validate path to prevent open redirects and injection
     if (!path || typeof path !== 'string') {
-      throw new Error('Invalid path: path must be a non-empty string');
+      throw new Error('Invalid path: path must be a non-empty string')
     }
-    
+
     // Prevent absolute URLs that could be used for open redirects
     // Only allow relative paths or paths starting with /
     if (path.match(/^https?:\/\//i)) {
-      throw new Error('Security violation: Absolute URLs not allowed. Use relative paths only.');
+      throw new Error('Security violation: Absolute URLs not allowed. Use relative paths only.')
     }
-    
+
     // Basic path validation - allow alphanumeric, slashes, dashes, underscores, dots, query params
     // This is a test framework, so we allow more flexibility than production code
     if (!path.match(/^[/]?[a-zA-Z0-9/._?-]*$/)) {
-      throw new Error('Invalid path format detected');
+      throw new Error('Invalid path format detected')
     }
-    
-    await this.page.goto(path);
+
+    await this.page.goto(path)
   }
 
   /**
@@ -40,7 +40,7 @@ export class BasePage {
    * @returns Locator for the element
    */
   getByDataTestId(id: string): Locator {
-    return this.page.locator(`[data-test="${id}"]`);
+    return this.page.locator(`[data-test="${id}"]`)
   }
 
   /**
@@ -48,7 +48,7 @@ export class BasePage {
    * @returns The current page URL as a string
    */
   getCurrentUrl(): string {
-    return this.page.url();
+    return this.page.url()
   }
 }
 

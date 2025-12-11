@@ -1,5 +1,5 @@
-import { Page } from '@playwright/test';
-import { BasePage } from './base.page';
+import { Page } from '@playwright/test'
+import { BasePage } from './base.page'
 
 /**
  * CartPage - Page Object Model for SauceDemo shopping cart page
@@ -7,7 +7,7 @@ import { BasePage } from './base.page';
  */
 export class CartPage extends BasePage {
   constructor(page: Page) {
-    super(page);
+    super(page)
   }
 
   /**
@@ -15,8 +15,8 @@ export class CartPage extends BasePage {
    * @param name - The name of the product to verify
    */
   async expectCartItem(name: string): Promise<void> {
-    const cartItem = this.page.locator('.cart_item').filter({ hasText: name });
-    await cartItem.waitFor({ state: 'visible' });
+    const cartItem = this.page.locator('.cart_item').filter({ hasText: name })
+    await cartItem.waitFor({ state: 'visible' })
   }
 
   /**
@@ -24,16 +24,16 @@ export class CartPage extends BasePage {
    * @param name - The name of the product to remove
    */
   async removeItem(name: string): Promise<void> {
-    const cartItem = this.page.locator('.cart_item').filter({ hasText: name });
-    const removeButton = cartItem.locator('button').filter({ hasText: /Remove/i });
-    await removeButton.click();
+    const cartItem = this.page.locator('.cart_item').filter({ hasText: name })
+    const removeButton = cartItem.locator('button').filter({ hasText: /Remove/i })
+    await removeButton.click()
   }
 
   /**
    * Start the checkout process
    */
   async startCheckout(): Promise<void> {
-    await this.getByDataTestId('checkout').click();
+    await this.getByDataTestId('checkout').click()
   }
 
   /**
@@ -41,8 +41,8 @@ export class CartPage extends BasePage {
    * @returns Number of cart items
    */
   async getCartItemCount(): Promise<number> {
-    const cartItems = this.page.locator('.cart_item');
-    return cartItems.count();
+    const cartItems = this.page.locator('.cart_item')
+    return cartItems.count()
   }
 }
 

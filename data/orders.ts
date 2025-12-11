@@ -4,14 +4,14 @@
  */
 
 export interface OrderInfo {
-  firstName: string;
-  lastName: string;
-  zipCode: string;
+  firstName: string
+  lastName: string
+  zipCode: string
 }
 
 export const ORDER_DATA: OrderInfo = {
   firstName: 'John',
   lastName: 'Doe',
   zipCode: '12345',
-} as const;
+} as const
 
