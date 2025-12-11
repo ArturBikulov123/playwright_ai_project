@@ -1,4 +1,4 @@
-import { APIRequestContext, APIResponse } from '@playwright/test'
+import { APIRequestContext } from '@playwright/test'
 import { envConfig } from '../config/env.config'
 import { logger } from './logger'
 import { getErrorMessage, handleApiResponseError } from './common-helpers'
@@ -78,7 +78,7 @@ export class OllamaHelpers {
         options,
       }
 
-      logger.info('Ollama generate request', { model, prompt: prompt.substring(0, 100) + '...' })
+      logger.info('Ollama generate request', { model, prompt: `${prompt.substring(0, 100)}...` })
 
       const response = await request.post(url, {
         data: payload,
@@ -157,7 +157,7 @@ export class OllamaHelpers {
 Please provide the data in ${format} format. 
 Be concise and only return the data without additional explanation.`
 
-    return await this.generate(request, prompt)
+    return this.generate(request, prompt)
   }
 
   /**
@@ -178,6 +178,6 @@ Provide a brief analysis focusing on:
 2. Key issues or failures
 3. Recommendations for improvement`
 
-    return await this.generate(request, prompt)
+    return this.generate(request, prompt)
   }
 }
