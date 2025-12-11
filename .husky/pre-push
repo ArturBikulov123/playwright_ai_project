@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 echo "🧪 Running browser tests in Chrome before push (excluding API tests)..."
 npm run test:browser -- --project=chromium
 

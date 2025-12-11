@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
 # Run linting before commit
 npm run lint
- 
+
+# Run smoke tests only (faster pre-commit check)
+# For full test suite, use: npm run test:shard:all
+npm run test:smoke
