@@ -7,7 +7,6 @@
  */
 
 const { spawn } = require('child_process');
-const path = require('path');
 
 const numberOfShards = parseInt(process.argv[2]) || 4;
 const shards = [];
@@ -26,37 +25,41 @@ for (let i = 1; i <= numberOfShards; i++) {
     console.error(`Shard ${i} error:`, error);
   });
 
-  shardProcess.on('exit', (code) => {
-    if (code !== 0) {
-      console.error(`Shard ${i} exited with code ${code}`);
-      process.exit(code);
-    }
-  });
-
   shards.push(shardProcess);
 }
 
 // Wait for all shards to complete
-Promise.all(
-  shards.map(
-    (shard) =>
-      new Promise((resolve, reject) => {
-        shard.on('exit', (code) => {
-          if (code === 0) {
-            resolve();
-          } else {
-            reject(new Error(`Shard exited with code ${code}`));
-          }
-        });
-      })
-  )
-)
-  .then(() => {
-    console.log('\n✅ All shards completed successfully!');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('\n❌ Some shards failed:', error);
-    process.exit(1);
+const shardPromises = shards.map(
+  (shard, index) =>
+    new Promise((resolve, reject) => {
+      shard.on('exit', (code) => {
+        if (code === 0) {
+          resolve({ shard: index + 1, success: true });
+        } else {
+          console.error(`Shard ${index + 1} exited with code ${code}`);
+          reject({ shard: index + 1, code, success: false });
+        }
+      });
+    })
+);
+
+Promise.allSettled(shardPromises)
+  .then((results) => {
+    const failed = results.filter((r) => r.status === 'rejected');
+    const succeeded = results.filter((r) => r.status === 'fulfilled');
+
+    if (failed.length === 0) {
+      console.log(`\n✅ All ${numberOfShards} shards completed successfully!`);
+      process.exit(0);
+    } else {
+      console.error(`\n❌ ${failed.length} of ${numberOfShards} shards failed:`);
+      failed.forEach((failure) => {
+        if (failure.reason) {
+          console.error(`  - Shard ${failure.reason.shard}: exit code ${failure.reason.code}`);
+        }
+      });
+      console.log(`✅ ${succeeded.length} shard(s) succeeded`);
+      process.exit(1);
+    }
   });
 
