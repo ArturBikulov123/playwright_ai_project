@@ -127,21 +127,6 @@ export class OllamaHelpers {
   }
 
   /**
-   * Check if Ollama API is available
-   * @param request - Playwright API request context
-   * @returns True if Ollama is available, false otherwise
-   */
-  static async isAvailable(request: APIRequestContext): Promise<boolean> {
-    try {
-      await this.listModels(request);
-      return true;
-    } catch (error) {
-      logger.warn('Ollama API not available', { error: getErrorMessage(error) });
-      return false;
-    }
-  }
-
-  /**
    * Generate test data using AI
    * @param request - Playwright API request context
    * @param description - Description of the test data needed
@@ -161,22 +146,77 @@ Be concise and only return the data without additional explanation.`;
   }
 
   /**
-   * Analyze test results using AI
+   * Verify if locators from a Page Object Model class match the actual HTML page
    * @param request - Playwright API request context
-   * @param testResults - Test results to analyze
-   * @returns Analysis of test results
+   * @param pomFileContent - The content of the Page Object Model class file
+   * @param htmlContent - The HTML content of the page to verify against
+   * @returns AI-generated verification result indicating if locators match the HTML
    */
-  static async analyzeTestResults(
+  static async verifyPageLocators(
     request: APIRequestContext,
-    testResults: string
+    pomFileContent: string,
+    htmlContent: string
   ): Promise<string> {
-    const prompt = `Analyze the following test results and provide insights:
-${testResults}
+    const prompt = `Verify if locators from this Playwright Page Object Model class: 
 
-Provide a brief analysis focusing on:
-1. Overall test status
-2. Key issues or failures
-3. Recommendations for improvement`;
+${pomFileContent}
+
+match the HTML structure from this page:
+
+${htmlContent}
+
+Please analyze:
+1. Do the CSS selectors, data-test attributes, and other locators in the POM class exist in the HTML?
+2. Are there any locators in the POM that don't match any elements in the HTML?
+3. Are there any potential issues or suggestions for improving the locators?
+4. Provide a summary of the verification result.
+
+Be concise and focus on actionable insights.`;
+
+    logger.info('Verifying page locators using AI', {
+      pomContentLength: pomFileContent.length,
+      htmlContentLength: htmlContent.length,
+    });
+
+    return this.generate(request, prompt);
+  }
+
+  /**
+   * Generate locators for page elements using AI
+   * @param request - Playwright API request context
+   * @param htmlContent - The HTML content of the page
+   * @param elementDescriptions - Descriptions of elements to locate (e.g., "username input field", "login button")
+   * @returns AI-generated locators as Playwright selectors
+   */
+  static async generatePageLocators(
+    request: APIRequestContext,
+    htmlContent: string,
+    elementDescriptions: string[]
+  ): Promise<string> {
+    const descriptionsList = elementDescriptions
+      .map((desc, index) => `${index + 1}. ${desc}`)
+      .join('\n');
+
+    const prompt = `Given the following HTML content, generate Playwright locators (CSS selectors, data-test attributes, or other reliable selectors) for these elements:
+
+${descriptionsList}
+
+HTML Content:
+${htmlContent}
+
+For each element, provide:
+1. The recommended locator (CSS selector or attribute selector)
+2. Brief explanation of why this locator is reliable
+3. Alternative locator options if available
+
+Format your response as a clear list with the element description, followed by the locator and explanation.
+
+Be concise and focus on stable, maintainable locators.`;
+
+    logger.info('Generating page locators using AI', {
+      elementCount: elementDescriptions.length,
+      htmlContentLength: htmlContent.length,
+    });
 
     return this.generate(request, prompt);
   }

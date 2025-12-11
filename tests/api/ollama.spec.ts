@@ -3,9 +3,12 @@
  * Tests the connection and functionality of the local Ollama API
  */
 import { test, expect } from '@playwright/test'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import { OllamaHelpers } from '../../utils/ollama-helpers'
 import { logger } from '../../utils/logger'
 import { getErrorMessage } from '../../utils/common-helpers'
+import { envConfig } from '../../config/env.config'
 
 test.describe('Ollama API Tests', () => {
   test('should connect to Ollama API and list available models @api', async ({ request }) => {
@@ -63,6 +66,37 @@ test.describe('Ollama API Tests', () => {
       expect(error).toBeDefined()
       logger.info('Error handled correctly', { error: getErrorMessage(error) })
     }
+  })
+
+  test('should verify page locators using AI @api', async ({ request, page }) => {
+    logger.step('Testing AI-powered page locator verification')
+
+    // Navigate to the login page
+    await page.goto(`${envConfig.baseUrl}/`)
+    await page.waitForLoadState('networkidle')
+
+    // Get the HTML content of the page
+    const htmlContent = await page.content()
+
+    // Read the LoginPage POM file content
+    const pomFilePath = join(process.cwd(), 'pages', 'login.page.ts')
+    const pomFileContent = readFileSync(pomFilePath, 'utf-8')
+
+    // Verify locators using AI
+    const verificationResult = await OllamaHelpers.verifyPageLocators(
+      request,
+      pomFileContent,
+      htmlContent
+    )
+
+    // Verify that we got a response
+    expect(verificationResult).toBeDefined()
+    expect(verificationResult.length).toBeGreaterThan(0)
+
+    logger.info('Page locator verification completed', {
+      resultLength: verificationResult.length,
+    })
+    logger.debug('Verification result', { result: verificationResult })
   })
 })
 

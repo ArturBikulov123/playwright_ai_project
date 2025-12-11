@@ -28,6 +28,7 @@ export interface EnvConfig {
   traceMode: 'off' | 'on' | 'on-first-retry'
   ollamaApiUrl: string
   ollamaModel: string
+  ollamaApiTimeout: number
 }
 
 
@@ -107,6 +108,7 @@ export const envConfig: EnvConfig = {
   traceMode: getEnumEnv('TRACE_MODE', 'on-first-retry', ['off', 'on', 'on-first-retry'] as const),
   ollamaApiUrl: getEnv('OLLAMA_API_URL', 'http://localhost:11434'),
   ollamaModel: getEnv('OLLAMA_MODEL', 'llama3.1:8b'),
+  ollamaApiTimeout: getNumberEnvWithWarning('OLLAMA_API_TIMEOUT', 120000),
 }
 
 // Set logger level based on environment
@@ -127,6 +129,7 @@ const sanitizedConfig = {
   traceMode: envConfig.traceMode,
   ollamaApiUrl: envConfig.ollamaApiUrl,
   ollamaModel: envConfig.ollamaModel,
+  ollamaApiTimeout: envConfig.ollamaApiTimeout,
 }
 
 logger.info('Environment configuration loaded', sanitizedConfig)
