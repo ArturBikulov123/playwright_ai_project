@@ -3,6 +3,9 @@
 set -e
 
 echo "🧪 Running browser tests in Chrome before push (excluding API tests)..."
-npm run test:browser -- --project=chromium
+npm run test:browser -- --project=chromium > /dev/null 2>&1 || {
+  echo "❌ Tests failed! Check the report manually."
+  exit 1
+}
 
 echo "✅ Pre-push checks passed!"
