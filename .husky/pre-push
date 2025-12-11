@@ -1,5 +1,4 @@
-# Husky hooks commented out - disabled for now
-# echo "🧪 Running tests before push..."
-# npm test
+echo "🧪 Running tests before push..."
+npm test
 
-# echo "✅ Pre-push checks passed!"
+echo "✅ Pre-push checks passed!"

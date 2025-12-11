@@ -22,6 +22,7 @@
     "test:shard:all": "node scripts/run-shards.js 4",
     "test:report": "playwright show-report",
     "test:codegen": "playwright codegen",
+    "prepare": "husky",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"**/*.{ts,js,json,md}\"",
