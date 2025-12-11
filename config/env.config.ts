@@ -22,7 +22,8 @@ export interface EnvConfig {
   retries: number
   ci: boolean
   logLevel: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'
-  screenshotMode: 'off' | 'on' | 'only-on-failure'
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+  screenshotMode: 'off' | 'off' | 'only-on-failure'
   videoMode: 'off' | 'on' | 'on-first-retry' | 'retain-on-failure'
   traceMode: 'off' | 'on' | 'on-first-retry'
   ollamaApiUrl: string
