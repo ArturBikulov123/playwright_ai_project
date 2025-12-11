@@ -4,7 +4,8 @@ import { envConfig } from './config/env.config'
 /**
  * Playwright configuration for SauceDemo test framework
  * Configured for enterprise-level testing with sensible timeouts and reporting
- * Supports multiple browsers, environments, and comprehensive reporting
+ * Currently configured to use only Google Chrome (Chromium) browser
+ * Other browsers (Firefox, WebKit, Mobile) are commented out
  * 
  * SHARDING: To speed up test execution, use sharding:
  * - Run with sharding: npm run test:shard:1:4 (runs shard 1 of 4)
@@ -55,7 +56,8 @@ export default defineConfig({
     toMatchSnapshot: { threshold: 0.2 },
   },
 
-  // Multiple browser projects
+  // Browser projects - Currently using only Chrome (Chromium)
+  // Other browsers are commented out below
   projects: [
     {
       name: 'chromium',

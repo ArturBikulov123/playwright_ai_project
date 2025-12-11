@@ -128,10 +128,10 @@ npx playwright test tests/app/login.spec.ts
 
 ### Run tests for specific browser
 ```bash
-npm run test:chromium    # Run on Chromium only
-npm run test:firefox     # Run on Firefox only
-npm run test:webkit      # Run on WebKit only
-npm run test:mobile      # Run on mobile browsers
+npm run test:chromium    # Run on Chromium only (Chrome)
+# npm run test:firefox     # Run on Firefox only (commented out)
+# npm run test:webkit      # Run on WebKit only (commented out)
+# npm run test:mobile      # Run on mobile browsers (commented out)
 ```
 
 ### Run tests by tags
@@ -201,10 +201,9 @@ This framework demonstrates several key competencies valued in enterprise test a
 
 ## Key Features
 
-### 🎯 Multi-Browser Support
-- **Desktop**: Chromium, Firefox, WebKit
-- **Mobile**: Chrome (Android), Safari (iOS)
-- **Tablet**: iPad Pro viewport
+### 🎯 Browser Support
+- **Desktop**: Chromium (Google Chrome) - Currently active
+- **Other browsers**: Firefox, WebKit, Mobile Chrome, Mobile Safari, Tablet (commented out)
 
 ### 🛠️ Utility Functions
 - **Logger**: Structured logging with different log levels
@@ -263,7 +262,7 @@ npm run security:audit
 ## Configuration Highlights
 
 - **Base URL**: Configurable via environment variables (default: `https://www.saucedemo.com`)
-- **Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari, Tablet
+- **Browsers**: Chromium (Google Chrome) - Other browsers (Firefox, WebKit, Mobile) are commented out
 - **Timeouts**: 30s per test, 10s for assertions (configurable)
 - **Reporting**: HTML, JSON, JUnit, List, GitHub Actions reporters
 - **Retries**: 2 retries in CI environments, 0 in local
@@ -278,7 +277,7 @@ Create a `.env` file (use `.env.example` as a template) to configure:
 
 - `BASE_URL`: Application base URL
 - `HEADLESS`: Run tests in headless mode (true/false)
-- `BROWSER`: Default browser (chromium/firefox/webkit)
+- `BROWSER`: Default browser (chromium - other browsers commented out)
 - `TIMEOUT`: Test timeout in milliseconds
 - `LOG_LEVEL`: Logging level (DEBUG/INFO/WARN/ERROR)
 - And more... (see `.env.example`)
@@ -300,7 +299,7 @@ The project includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that
 5. **Type Safety** - Full TypeScript implementation
 6. **Code Quality** - ESLint, Prettier, and Husky hooks
 7. **CI/CD Integration** - Automated testing pipeline
-8. **Multi-Browser Testing** - Cross-browser compatibility
+8. **Browser Testing** - Currently configured for Chrome (Chromium) only
 9. **Comprehensive Reporting** - Multiple reporter formats
 10. **Visual Regression** - Screenshot comparison capabilities
 11. **Performance Testing** - Built-in performance monitoring
