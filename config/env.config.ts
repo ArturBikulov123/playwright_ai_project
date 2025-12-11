@@ -1,5 +1,6 @@
 import { config } from 'dotenv'
 import { logger } from '../utils/logger'
+import { validateSecureUrl } from '../utils/common-helpers'
 
 /**
  * Environment configuration loader
@@ -24,37 +25,16 @@ export interface EnvConfig {
   screenshotMode: 'off' | 'on' | 'only-on-failure'
   videoMode: 'off' | 'on' | 'on-first-retry' | 'retain-on-failure'
   traceMode: 'off' | 'on' | 'on-first-retry'
+  ollamaApiUrl: string
+  ollamaModel: string
 }
 
-/**
- * Validate URL is HTTPS to prevent insecure connections
- * SECURITY: Enforces HTTPS for all URLs
- */
-function validateHttpsUrl(url: string, key: string): string {
-  if (!url) {
-    return url
-  }
-
-  // Allow localhost for development
-  const isLocalhost = /^https?:\/\/localhost(:\d+)?(\/|$)/i.test(url) ||
-                     /^https?:\/\/127\.0\.0\.1(:\d+)?(\/|$)/i.test(url) ||
-                     /^https?:\/\/::1(:\d+)?(\/|$)/i.test(url)
-
-  if (!isLocalhost && !url.startsWith('https://')) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(`Security violation: ${key} must use HTTPS in production. Current value: ${url}`)
-    }
-    logger.warn(`Security warning: ${key} uses HTTP instead of HTTPS. This is insecure and not allowed in production.`)
-  }
-
-  return url
-}
 
 function getEnv(key: string, defaultValue: string): string {
   const value = process.env[key] ?? defaultValue
   // Validate HTTPS for URL environment variables
   if (key.includes('URL')) {
-    return validateHttpsUrl(value, key)
+    return validateSecureUrl(value, key)
   }
   return value
 }
@@ -124,6 +104,8 @@ export const envConfig: EnvConfig = {
     'retain-on-failure',
   ] as const),
   traceMode: getEnumEnv('TRACE_MODE', 'on-first-retry', ['off', 'on', 'on-first-retry'] as const),
+  ollamaApiUrl: getEnv('OLLAMA_API_URL', 'http://localhost:11434'),
+  ollamaModel: getEnv('OLLAMA_MODEL', 'llama3.1:8b'),
 }
 
 // Set logger level based on environment
@@ -142,6 +124,8 @@ const sanitizedConfig = {
   screenshotMode: envConfig.screenshotMode,
   videoMode: envConfig.videoMode,
   traceMode: envConfig.traceMode,
+  ollamaApiUrl: envConfig.ollamaApiUrl,
+  ollamaModel: envConfig.ollamaModel,
 }
 
 logger.info('Environment configuration loaded', sanitizedConfig)

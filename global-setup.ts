@@ -1,6 +1,7 @@
 import { chromium, FullConfig } from '@playwright/test'
 import { logger } from './utils/logger'
 import { envConfig } from './config/env.config'
+import { getErrorMessage } from './utils/common-helpers'
 
 /**
  * Global setup runs once before all tests
@@ -62,7 +63,7 @@ async function globalSetup(config: FullConfig): Promise<void> {
     await browser.close()
   } catch (error) {
     // SECURITY: Sanitize error messages to prevent leaking sensitive information
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorMessage = getErrorMessage(error)
     // Don't expose full error details in production
     const sanitizedError = process.env.NODE_ENV === 'production'
       ? 'Application health check failed'
